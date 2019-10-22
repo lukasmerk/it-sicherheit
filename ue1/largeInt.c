@@ -59,8 +59,7 @@ void RecomputeUsageVariables(LargeInt* b) {
  ** Returns TRUE if and only> if the given LargeInt is even.
  **/
 boolean IsEven(const LargeInt* b) {
-    // Bitte implementieren!
-    uint32 mask = 0x00000001U;
+    uint32 mask = 0x1U;
     if(!(b->data[0] & mask)) return TRUE;
     return FALSE;
 }
@@ -69,9 +68,7 @@ boolean IsEven(const LargeInt* b) {
  ** Returns TRUE if and only if the given LargeInt is odd.
  **/
 boolean IsOdd(const LargeInt* b) {
-    // Bitte implementieren!
-    uint32 mask = 0x00000001U;
-    uint8 count = 0;
+    uint32 mask = 0x1U;
     if(b->data[0] & mask) return TRUE;
     return FALSE;
 }
