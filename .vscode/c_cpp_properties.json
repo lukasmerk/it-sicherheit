@@ -6,10 +6,16 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [],
-            "intelliSenseMode": "gcc-x64",
+            "intelliSenseMode": "${default}",
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
-            "cppStandard": "c++11"
+            "cppStandard": "c++11",
+            "browse": {
+                "path": [
+                    "/usr/include"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ],
     "version": 4
