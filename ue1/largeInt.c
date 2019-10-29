@@ -155,6 +155,69 @@ LargeInt* Add(LargeInt* s1, LargeInt* s2) {
     return ergebnis;
 }
 
+LargeInt* Multiply(LargeInt* m1, LargeInt* m2) {
+    uint32 maxwords, maxusedwords, minreqwords, words;
+    if(m1->wordSize > m2->wordSize) {
+        maxwords = m1->wordSize;
+    } else {
+        maxwords = m2->wordSize;
+    }
+    if(m1->usedWords > m2->usedWords) {
+        maxusedwords = m1->usedWords;
+    } else {
+        maxusedwords = m2->usedWords;
+    }
+    minreqwords = maxusedwords*2;
+    if(minreqwords>maxwords) {
+        words = minreqwords;
+    } else {
+        words = maxwords;
+    }
+    LargeInt* ergebnis = InitLargeIntWithUint32(0, words);
+    uint32 i;
+    uint32 j;
+    for(i = 0; i<m1->usedWords, i++)
+    {
+        while(m2->usedWords >= j)
+        {
+            uint32 blockindex = i+j;
+            uint32 teilergebnis = m1->data[i]*m2->data[j];
+            uint16 sum = teilergebnis & STANDARD_USEBIT_MASK;
+            ergebnis->data[blockindex] += sum;
+
+            uint32 k = blockindex;
+            uint32 uebertrag = 0;
+            do
+            {
+                ergebnis->data[k] += uebertrag;
+                uebertrag = ergebnis->data[k] & STANDARD_CALCBIT_MASK;
+                ergebnis->data[k] &= STANDARD_USEBIT_MASK;
+                uebertrag >>= BITSPERWORD;
+                k++;
+            } while (uebertrag != 0);
+
+            uint16 carry = teilergebnis & STANDARD_CALCBIT_MASK;
+            carry >>= BITSPERWORD;
+            ergebnis->data[blockindex+1] += carry;
+            
+            k = blockindex+1;
+            uebertrag = 0;
+
+            do
+            {
+                ergebnis->data[k] += uebertrag;
+                uebertrag = ergebnis->data[k] & STANDARD_CALCBIT_MASK;
+                ergebnis->data[k] &= STANDARD_USEBIT_MASK;
+                uebertrag >>= BITSPERWORD;
+                k++;
+            } while (uebertrag != 0);
+            j++;
+        }
+    }
+    RecomputeUsageVariables(ergebnis);
+    return ergebnis;
+}
+
 
 void printLargeInt(LargeInt *x) {
     int i = x->bitSize - 1;
@@ -187,6 +250,11 @@ int main() {
     printf("%i\n", IsOdd(y));
     LargeInt* z = Add(x, y);
     printLargeInt(z);
+    LargeInt* u = Multiply(x,y);
+    printLargeInt(u);
+    printf("100001011101110010011100000000000\n");
+    LargeInt* test = Multiply(InitLargeIntWithUint32(10,5),InitLargeIntWithUint32(10,5));
+    printLargeInt(test);
     return 0;
 }
 
