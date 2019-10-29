@@ -176,43 +176,50 @@ LargeInt* Multiply(LargeInt* m1, LargeInt* m2) {
     LargeInt* ergebnis = InitLargeIntWithUint32(0, words);
     uint32 i;
     uint32 j;
-    for(i = 0; i<m1->usedWords, i++)
+    uint32 overflow;
+    for(i = 0; i<m1->usedWords; i++)
     {
-        while(m2->usedWords >= j)
+        overflow = 0;
+        for(j=0; j<m2->usedWords; j++)
         {
             uint32 blockindex = i+j;
-            uint32 teilergebnis = m1->data[i]*m2->data[j];
-            uint16 sum = teilergebnis & STANDARD_USEBIT_MASK;
-            ergebnis->data[blockindex] += sum;
+            uint32 mulergebnis = m1->data[i]*m2->data[j];
+            uint32 teilergebnis = mulergebnis + overflow + ergebnis->data[blockindex];
+            ergebnis->data[blockindex] = teilergebnis & STANDARD_USEBIT_MASK;
+            overflow = teilergebnis & STANDARD_CALCBIT_MASK;
+            overflow >>= BITSPERWORD;
+            // continue;
 
-            uint32 k = blockindex;
-            uint32 uebertrag = 0;
-            do
-            {
-                ergebnis->data[k] += uebertrag;
-                uebertrag = ergebnis->data[k] & STANDARD_CALCBIT_MASK;
-                ergebnis->data[k] &= STANDARD_USEBIT_MASK;
-                uebertrag >>= BITSPERWORD;
-                k++;
-            } while (uebertrag != 0);
+            // uint32 k = blockindex;
+            // uint32 uebertrag = 0;
+            // do
+            // {
+            //     ergebnis->data[k] += uebertrag;
+            //     uebertrag = ergebnis->data[k] & STANDARD_CALCBIT_MASK;
+            //     ergebnis->data[k] &= STANDARD_USEBIT_MASK;
+            //     uebertrag >>= BITSPERWORD;
+            //     k++;
+            // } while (uebertrag != 0);
 
-            uint16 carry = teilergebnis & STANDARD_CALCBIT_MASK;
-            carry >>= BITSPERWORD;
-            ergebnis->data[blockindex+1] += carry;
+            // uint16 carry = teilergebnis & STANDARD_CALCBIT_MASK;
+            // carry >>= BITSPERWORD;
+            // ergebnis->data[blockindex+1] += carry;
             
-            k = blockindex+1;
-            uebertrag = 0;
+            // k = blockindex+1;
+            // uebertrag = 0;
 
-            do
-            {
-                ergebnis->data[k] += uebertrag;
-                uebertrag = ergebnis->data[k] & STANDARD_CALCBIT_MASK;
-                ergebnis->data[k] &= STANDARD_USEBIT_MASK;
-                uebertrag >>= BITSPERWORD;
-                k++;
-            } while (uebertrag != 0);
-            j++;
+            // do
+            // {
+            //     ergebnis->data[k] += uebertrag;
+            //     uebertrag = ergebnis->data[k] & STANDARD_CALCBIT_MASK;
+            //     ergebnis->data[k] &= STANDARD_USEBIT_MASK;
+            //     uebertrag >>= BITSPERWORD;
+            //     k++;
+            // } while (uebertrag != 0);
+            // j++;
         }
+        if(overflow > 0)
+        ergebnis->data[i+j] = overflow;
     }
     RecomputeUsageVariables(ergebnis);
     return ergebnis;
