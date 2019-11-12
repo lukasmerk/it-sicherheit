@@ -182,6 +182,8 @@ bitBlock *forChars(char *msg) {
 }
 
 
+
+
 void test() {
     bitBlock *msg = forChars("schorschelblubber");
     uint32* hash = sha1(msg);

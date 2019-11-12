@@ -8,7 +8,7 @@
             "name": "(gdb) Starten",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/ue1/a.out",
+            "program": "${workspaceFolder}/ue3/a.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
